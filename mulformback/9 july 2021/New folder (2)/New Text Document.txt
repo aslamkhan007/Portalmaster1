@@ -1,0 +1,2 @@
+after using cookie and and checkbox .
+next task is to set checkbox and add dropdown in place of  textbox

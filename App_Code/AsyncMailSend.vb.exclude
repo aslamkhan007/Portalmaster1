@@ -1,0 +1,270 @@
+﻿Imports System
+Imports System.Net
+Imports System.Net.Mail
+
+Imports System.Net.Mime
+Imports System.Threading
+Imports System.ComponentModel
+
+Imports System.Text
+'using Microsoft.VisualBasic;
+Imports System.Data.SqlClient
+Imports System.Web.UI.WebControls
+Imports System.Data
+
+Imports System.Web
+Imports System.Web.UI
+
+'Namespace Examples.SmtpExamples.Async
+Public Class AsyncExample
+    Private Shared mailSent As Boolean = False
+    Dim myPageHTML As String
+    Dim Body As String = String.Empty
+
+
+
+
+
+    Private Sub SendCompletedCallback(ByVal sender As Object, ByVal e As AsyncCompletedEventArgs)
+        ' Get the unique identifier for this asynchronous operation.
+        Dim token As String = CStr(e.UserState)
+
+        If e.Cancelled Then
+            Console.WriteLine("[{0}] Send canceled.", token)
+        End If
+        If e.Error IsNot Nothing Then
+            Console.WriteLine("[{0}] {1}", token, e.Error.ToString())
+        Else
+            Console.WriteLine("Message sent.")
+        End If
+        mailSent = True
+    End Sub
+    Public Shared Sub Main(ByVal args() As String, ByVal mail As MailMessage, empCode As String, DrpLvStatus As String, ids As Int64, currentPageUrll As String)
+        '
+        '    ' Command line argument must the SMTP host.
+        '    Dim client As New SmtpClient(args(0))
+        '    ' Specify the email sender.
+        '    ' Create a mailing address that includes a UTF8 character
+        '    ' in the display name.
+        '    Dim mailFrom As New MailAddress("jane@contoso.com", "Jane " & ChrW(&HD8) & " Clayton", System.Text.Encoding.UTF8)
+        '    ' Set destinations for the email message.
+        '    Dim mailTo As New MailAddress("ben@contoso.com")
+        '    ' Specify the message content.
+        '    Dim message As New MailMessage(mailFrom, mailTo)
+        '    message.Body = "This is a test email message sent by an application. "
+        '    ' Include some non-ASCII characters in body and subject.
+        '    Dim someArrows As New String(New Char() {ChrW(&H2190), ChrW(&H2191), ChrW(&H2192), ChrW(&H2193)})
+        '    message.Body += Environment.NewLine & someArrows
+        '    message.BodyEncoding = System.Text.Encoding.UTF8
+        '    message.Subject = "test message 1" & someArrows
+        '    message.SubjectEncoding = System.Text.Encoding.UTF8
+        '    ' Set the method that is called back when the send operation ends.
+        '    AddHandler client.SendCompleted, AddressOf SendCompletedCallback
+        '    ' The userState can be any object that allows your callback 
+        '    ' method to identify this send operation.
+        '    ' For this example, the userToken is a string constant.
+        '    Dim userState As String = "test message1"
+        '    client.SendAsync(message, userState)
+        '    Console.WriteLine("Sending message... press c to cancel mail. Press any other key to exit.")
+        '    Dim answer As String = Console.ReadLine()
+        '    ' If the user canceled the send, and mail hasn't been sent yet,
+        '    ' then cancel the pending operation.
+        '    If answer.StartsWith("c") AndAlso mailSent = False Then
+        '        client.SendAsyncCancel()
+        '    End If
+        '    ' Clean up.
+        '    message.Dispose()
+        SendMailMessage(empCode, DrpLvStatus, ids, currentPageUrll)
+        Console.WriteLine("Goodbye.")
+    End Sub
+
+    Public Shared Sub SendMailMessage(empCode As String, DrpLvStatus As String, ids As Int64, currentPageUrll As String)
+        Dim obj As Connection = New Connection
+        Dim ob As HelpDeskClass = New HelpDeskClass
+        Dim cmd As SqlCommand = New SqlCommand()
+        Dim qry As String = String.Empty
+        Dim i As Integer
+
+        Dim ii As Int16
+        Dim dr As SqlDataReader
+        Dim cl() As String = New String((71) - 1) {}
+        'Dim Empcode As String = String.Empty
+        Dim usercode As String = String.Empty
+        Dim sql As String = String.Empty
+        Dim too As String = String.Empty
+        Dim from As String = String.Empty
+        Dim bcc As String = String.Empty
+        Dim cc As String = String.Empty
+        Dim subject As String = String.Empty
+
+        Dim url As String = String.Empty
+        Dim check1 As Integer
+        Try
+            sql = String.Empty
+
+            too = String.Empty
+            from = String.Empty
+            bcc = String.Empty
+            cc = String.Empty
+            subject = String.Empty
+
+
+            url = String.Empty
+            'Dim Body As String = String.Empty
+            Dim emailid As Integer = 0
+            Dim querystring As String = String.Empty
+            Dim querystring1 As String = String.Empty
+            Dim emailStore As String = String.Empty
+            sql = "Jct_Payroll_Leave_Auth_FetchEmailID_ashish '" & ids & "','" & empCode & "'"
+            'sql = ("Jct_Payroll_Leave_Auth_FetchEmailID_ashish '" _
+            '    + (ids + ("','" _
+            '    + (Session("EmpCode") + "'"))))
+            cmd = New SqlCommand(sql, obj.Connection)
+            Dim ds As DataSet = New DataSet
+            Dim da As SqlDataAdapter = New SqlDataAdapter(cmd)
+            da.Fill(ds)
+
+            If (ds.Tables.Count > 0) Then
+                If (ds.Tables(0).Rows(0)("ToId").ToString = "") Then
+                    emailStore = "aslam@jctltd.com"
+                Else
+                    emailStore = ds.Tables(0).Rows(0)("ToId").ToString
+                End If
+
+                url = "http://localhost:51907/LeaveAuthMailFormat.aspx?id=" & ids & "&Code=" & empCode
+
+                ''url = ("http://localhost:51907/LeaveAuthMailFormat.aspx?id=" _
+                ''    + (ids + ("&Code=" + empCode)))
+                ' url = "http://202.164.56.10:8081/LeaveAuthMailFormat.aspx?id=" + ids + "&Code=" + Session["EmpCode"];
+                GetPage(url, currentPageUrll)
+
+                If (emailStore.ToString.Substring(0, 1) = ",") Then
+                    ii = Convert.ToInt16(emailStore.Length.ToString)
+                    too = emailStore.Substring(1, ii)
+                Else
+                    too = emailStore
+                End If
+
+            End If
+
+            Dim mail As MailMessage = New MailMessage
+            'mail.From = New MailAddress(mailfrom, displayname, System.Text.Encoding.UTF8)
+            Dim SmtpMail As SmtpClient = New SmtpClient
+            SmtpMail.Host = "exchange2k7"
+            SmtpMail.Port = 25
+            SmtpMail.UseDefaultCredentials = True
+            If (ds.Tables(0).Rows(0)("ToIds").ToString = "kamal_bhasin@jctltd.com") Then
+                from = "approvals@jctltd.com"
+                ' SmtpMail.Credentials = new System.Net.NetworkCredential("approvals@jctltd.com", "pass@123");
+                mail.From = New MailAddress(from, "Leave Authorization", System.Text.Encoding.UTF8)
+                'client.Credentials = New System.Net.NetworkCredential(mailfrom, pass)
+                SmtpMail.Credentials = New System.Net.NetworkCredential(from, "pass@123")
+            Else
+                from = "noreply@jctltd.com"
+                SmtpMail.Credentials = New System.Net.NetworkCredential(from, "nrp@123")
+                '  SmtpMail.Credentials = new System.Net.NetworkCredential("noreply@jctltd.com", "nrp@123");
+            End If
+
+            'mail.From = New MailAddress(mailfrom, displayname, System.Text.Encoding.UTF8)
+            mail.From = New MailAddress(from)
+            mail.SubjectEncoding = System.Text.Encoding.UTF8
+
+            subject = DrpLvStatus & " Auhtorization with ID " & ids.ToString()
+
+            bcc = "aslam@jctltd.com,rajan@jctltd.com,ashish@jctltd.com"
+            cc = ds.Tables(0).Rows(0)("cc").ToString
+            ii = 0
+            If too.Contains(",") Then
+                Dim tos() As String = too.Split(Microsoft.VisualBasic.ChrW(44))
+
+                Do While (ii <= (tos.Length - 1))
+                    mail.To.Add(New MailAddress(tos(ii)))
+                    ii = (ii + 1)
+                Loop
+
+            Else
+                mail.To.Add(New MailAddress(too))
+            End If
+            ii = 0
+            If Not String.IsNullOrEmpty(cc) Then
+                If cc.Contains(",") Then
+                    Dim ccs() As String = cc.Split(Microsoft.VisualBasic.ChrW(44))
+                    ii = 0
+                    Do While (ii <= (ccs.Length - 1))
+                        mail.CC.Add(New MailAddress(ccs(ii)))
+                        ii = (ii + 1)
+                    Loop
+
+                Else
+                    mail.CC.Add(New MailAddress(cc))
+                End If
+
+            End If
+            ii = 0
+            If Not String.IsNullOrEmpty(bcc) Then
+                If bcc.Contains(",") Then
+                    Dim bccs() As String = bcc.Split(Microsoft.VisualBasic.ChrW(44))
+                    ii = 0
+                    Do While (ii <= (bccs.Length - 1))
+                        mail.Bcc.Add(New MailAddress(bccs(ii)))
+                        ii = (ii + 1)
+                    Loop
+
+                Else
+                    mail.Bcc.Add(New MailAddress(bcc))
+                End If
+
+            End If
+
+            mail.Subject = subject
+            mail.Body = Body
+            mail.IsBodyHtml = True
+            mail.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure
+
+            AddHandler SmtpMail.SendCompleted, AddressOf SendCompletedCallback
+            Dim userState As String = "test message1"
+            SmtpMail.SendAsync(mail, userState)
+            '''///////////////////////////////SmtpMail.Send(mail);
+            '   string script = "alert('Mail Sent');";
+            '   ScriptManager.RegisterStartupScript(this, this.GetType(), "ServerControlScript", script, true);
+            obj.ConClose()
+        Catch ex As Exception
+            Dim err As String = String.Empty
+            err = ex.Message.ToString
+            'Dim script As String = ("alert('" & (err & " Error');"))
+            'ScriptManager.RegisterStartupScript(Me, Me.GetType, "ServerControlScript", script, True)
+            Return
+        Finally
+            obj.ConClose()
+        End Try
+
+    End Sub
+
+    Public Sub GetPage(ByVal page_name As String, currentPageUrll As String)
+        '    Dim myclient As WebClient = New WebClient
+        '    Dim myPageHTML As String = Nothing
+        '    Dim requestHTML() As Byte = Nothing
+        '    Dim currentPageUrl As String = Nothing
+        '    currentPageUrl = Request.Url.AbsoluteUri
+
+        '    currentPageUrl = page_name
+        '    Dim utf8 As UTF8Encoding = New UTF8Encoding
+        '    requestHTML = myclient.DownloadData(currentPageUrl)
+        '    myPageHTML = utf8.GetString(requestHTML)
+        '    Return myPageHTML
+        Dim myclient As WebClient = New WebClient()
+        myPageHTML = ""
+        Dim requestHTML As Byte() = Nothing
+        Dim currentPageUrl As String = Nothing
+        currentPageUrl = currentPageUrll
+        currentPageUrl = page_name
+        Dim utf8 As UTF8Encoding = New UTF8Encoding()
+        requestHTML = myclient.DownloadData(currentPageUrl)
+        myPageHTML = utf8.GetString(requestHTML)
+        Body = myPageHTML
+    End Sub
+
+
+
+
+End Class

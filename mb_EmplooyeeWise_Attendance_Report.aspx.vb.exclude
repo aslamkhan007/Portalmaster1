@@ -1,0 +1,83 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class Payroll_Jct_Payroll_SalarySlip_View
+    Inherits System.Web.UI.Page
+    Dim Obj As Connection = New Connection
+    Dim SqlPass As String
+
+    Public Sub BindData()
+        Dim SqlPass As String = Nothing
+        Dim Cmd As SqlCommand = New SqlCommand()
+        SqlPass = "JCT_Payroll_EmplooyeeWise_Attendance_Report"
+        Cmd = New SqlCommand(SqlPass, Obj.Connection())
+        Cmd.CommandType = CommandType.StoredProcedure
+        'Cmd.Parameters.Add("@employeecode", SqlDbType.VarChar, 10).Value = Session("EmpCode")
+        Cmd.Parameters.Add("@employeecode", SqlDbType.VarChar, 10).Value = "9000000537"
+        Dim Da As SqlDataAdapter = New SqlDataAdapter(Cmd)
+        Dim ds As DataSet = New DataSet()
+        Da.Fill(ds)
+        GridView1.DataSource = ds.Tables(0)
+        GridView1.DataBind()
+
+        If ds.Tables(0).Rows.Count = 0 Then
+            Dim script As String = "alert('No Record Found');"
+            ScriptManager.RegisterStartupScript(Me, Me.[GetType](), "ServerControlScript", script, True)
+            Return
+        End If
+    End Sub
+    Protected Sub txtefffrm_TextChanged(ByVal sender As Object, ByVal e As EventArgs)
+        Dim origDT As DateTime = Convert.ToDateTime(txtefffrm.Text)
+        Dim lastDate As DateTime = New DateTime(origDT.Year, origDT.Month, 1).AddMonths(1).AddDays(-1)
+        txteffto_CalendarExtender.SelectedDate = lastDate
+    End Sub
+
+    Protected Sub lnksave_Click(ByVal sender As Object, ByVal e As EventArgs) Handles lnksave.Click
+        Try
+            Dim sql As String = "JCT_Payroll_EmplooyeeWise_Attendance_Report"
+            Dim cmd As SqlCommand = New SqlCommand(sql, Obj.Connection())
+            cmd.CommandType = CommandType.StoredProcedure
+            cmd.CommandTimeout = 0
+            cmd.Parameters.Add("@employeecode", SqlDbType.VarChar, 10).Value = Session("EmpCode")
+            'cmd.Parameters.Add("@employeecode", SqlDbType.VarChar, 10).Value = "9000000537"
+            cmd.Parameters.Add("@FromDate", SqlDbType.DateTime).Value = Convert.ToDateTime(txtefffrm.Text)
+            cmd.Parameters.Add("@ToDate", SqlDbType.DateTime).Value = Convert.ToDateTime(txteffto.Text)
+            cmd.ExecuteNonQuery()
+
+            Dim Da As SqlDataAdapter = New SqlDataAdapter(cmd)
+            Dim ds As DataSet = New DataSet()
+            Da.Fill(ds)
+            GridView1.DataSource = ds.Tables(0)
+            GridView1.DataBind()
+
+            If ds.Tables(0).Rows.Count = 0 Then
+                Dim script As String = "alert('No Record Found');"
+                ScriptManager.RegisterStartupScript(Me, Me.[GetType](), "ServerControlScript", script, True)
+                Return
+            End If
+
+        Catch ex As Exception
+            Dim script2 As String = "alert('" & ex.Message & "');"
+            ScriptManager.RegisterStartupScript(Me, Me.[GetType](), "ServerControlScript", script2, True)
+            Return
+        End Try
+    End Sub
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        Response.Cache.SetCacheability(HttpCacheability.NoCache)
+        If (Session("empcode").ToString <> "") Then
+            'empcode = Session("empcode")
+        Else
+            Response.Redirect("~/login.aspx")
+        End If
+        If Not (Page.IsPostBack) Then
+            Dim Objfun As Functions = New Functions
+
+            If Objfun.fBrowserIsMobile() Then
+
+            End If
+        End If
+    End Sub
+
+End Class
+

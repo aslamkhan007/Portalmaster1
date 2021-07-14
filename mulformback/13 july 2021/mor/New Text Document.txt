@@ -1,0 +1,2 @@
+form is working except css and validation in permanent details . 
+length of email is also increased.

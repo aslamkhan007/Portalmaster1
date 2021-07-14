@@ -1,0 +1,3 @@
+styles working well on local to big error coming but strill css applied on local 
+on server no css applied. 
+next task is to check  reason for not css applied. 

@@ -1,0 +1,2 @@
+two tables data saved in table.
+now next task is to add array list in medical insurance table

@@ -1,0 +1,2 @@
+worked with both object and array of objects now. next testing is for  passing array 
+and object same time 

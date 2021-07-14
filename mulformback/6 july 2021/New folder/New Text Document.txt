@@ -1,0 +1,4 @@
+save logic in temp detail was added . 
+all stored procedure including fetch and post were backed up with earlier . 
+now target is to up only two pages . 
+so wil remove third and fourth. 

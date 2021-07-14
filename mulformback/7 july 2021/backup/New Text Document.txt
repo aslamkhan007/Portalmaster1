@@ -1,0 +1,2 @@
+font awesome icons added. 
+now validation on form controls

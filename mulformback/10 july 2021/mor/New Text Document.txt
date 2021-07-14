@@ -1,0 +1,3 @@
+morning backup . 
+now next task is to add alllist in viewmodel and  make a array of alllist for statemanagement 
+. 

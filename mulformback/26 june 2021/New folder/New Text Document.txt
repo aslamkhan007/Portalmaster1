@@ -1,0 +1,2 @@
+after correcting textboxes with new screen all field added now. next task is to post this 
+values using object making. 

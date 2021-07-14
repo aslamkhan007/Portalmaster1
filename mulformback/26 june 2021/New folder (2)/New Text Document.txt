@@ -1,0 +1,2 @@
+post action received with actual data now task is to make procedure and insert record in
+database. 

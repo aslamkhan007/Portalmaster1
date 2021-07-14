@@ -1,0 +1,91 @@
+﻿body {
+    font-family:'Segoe UI'; background:@#ccc;  font-size:100%;
+}
+h1, h2, h3 {
+font-weight:normal;
+}
+
+body .wrapper {
+background:#FFF; width:960px; padding:10px; margin:0px auto;
+}
+table {
+width:100%;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+    .wrapper {
+        max-width: 300px;
+        width: 300px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+    .wrapper {
+        max-width: 480px;
+        width: 480px;
+    }
+}
+
+
+ .AutoExtender
+		{
+		  /*  font-family: Verdana, Helvetica, sans-serif;*/
+		  font-family :tahoma;
+			font-size: .8em;
+			font-weight: normal;
+		   /* border: solid 1px #006699; */
+		   border: solid 1px gray;
+			line-height: 20px;
+			padding: 10px;
+			background-color: White;
+			margin-left:10px;
+			overflow :scroll;
+						
+		}
+		.AutoExtenderList
+		{
+		   /* border-bottom: dotted 1px #006699;*/
+		   border-bottom :dotted 1px gray;
+			cursor: pointer;
+			color: black;
+		}
+		.AutoExtenderHighlight
+		{
+			color: White;
+		   /* background-color: #006699; */
+		   background-color: gray;
+			cursor: pointer;
+		}
+		#divwidth
+		{
+		  width: 400px !important;    
+		  height : 200px;
+		
+		}
+	
+	   
+	   #divwidth1
+		{
+		  width: 400px !important;    
+		  height : 200px;
+		}
+	
+
+	   
+.autocomplete_ListItem1 
+{ 
+visibility : hidden;
+margin : 0px!important;
+background-color : white; 
+color : black;
+border : buttonshadow; 
+border-width : 1px;
+border-style : solid; 
+/*cursor : 'default';*/
+overflow : auto; 
+height :150px;
+text-align : left; 
+list-style-type : none;
+font-family: tahoma; 
+font-size: 8pt; 
+}

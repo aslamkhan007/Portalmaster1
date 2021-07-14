@@ -1,0 +1,1 @@
+sweetalert worked localy first time without css file. 

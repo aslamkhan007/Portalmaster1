@@ -1,0 +1,2 @@
+obj object passed as third parameter which contains array of objects of family details
+now next step is to delete row with javascript . 
