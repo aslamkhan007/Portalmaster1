@@ -42,7 +42,7 @@ h3{
 
 }
 
-#Form1,#Form2{
+#Form1,#Form2,#Form3{
 /*#Form1,#Form2,#Form3,#Form4{*/
     width: 280px;
     top: 20px;
@@ -114,6 +114,10 @@ form button{
 }*/
 
 
+#Form3 {
+    left: 450px;
+}
+
 #Form2{
     left: 450px;
 }
@@ -134,7 +138,8 @@ form button{
     position: relative;
 }
 #progress{
-    width: 180px;
+    /*width: 180px;*/
+    width: 120px;
     height: 100%;
     /*background: linear-gradient(to right,#ff105f,#ffad06);*/
     background: #e6c446;
