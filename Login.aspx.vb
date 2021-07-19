@@ -113,7 +113,7 @@ Partial Class Login
                 Response.Redirect("Birthday_Card.aspx")
             Else
                 'Response.Redirect("frminternet_connection.aspx")
-                Response.Redirect("default.aspx")
+                Response.Redirect("Jct_Payroll_Employee_Personal_Info.aspx")
             End If
         ElseIf PageL = 2 Then
 

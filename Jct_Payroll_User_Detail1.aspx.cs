@@ -14,11 +14,13 @@ using System.Runtime.Remoting.Contexts;
 using System.IO;
 using System.Text;
 using System.Security.Cryptography;
+using System.Windows.Forms;
 
 public partial class Jct_Payroll_User_Detail1 : System.Web.UI.Page
 {
     //static string myCode = string.Empty;
     //static HttpCookie nameCookie;
+   static SqlTransaction tran;
     protected void Page_Load(object sender, EventArgs e)
     {
         //nameCookie = Request.Cookies["Name"];
@@ -167,21 +169,19 @@ public partial class Jct_Payroll_User_Detail1 : System.Web.UI.Page
     //public static void SaveUser(CurrentAddress user, PermanentAddress user1)
     public static void SaveUser(CurrentAddress user, PermanentAddress user1, FamilyDetails[] user2)
     {
-        foreach (var myval in user2)
-        {
-            SaveTempFamilyDetail(myval.Relation,myval.Name,myval.dob,myval.DisableFlag);
-        }  
-
-        //System.Threading.Thread.Sleep(2000);
-        //try
-        //{         
         //SqlConnection con = new SqlConnection("Data Source=misdev;Initial Catalog=jctdev;Persist Security Info=True;User ID=itgrp;Password=power;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
-        SqlConnection con = new SqlConnection("Data Source=ITS-ASLAM7\\ASLAM;Initial Catalog=jctdev;Persist Security Info=True;User ID=sa;Password=power;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
+        //SqlConnection con = new SqlConnection("Data Source=ITS-ASLAM7\\ASLAM;Initial Catalog=jctdev;Persist Security Info=True;User ID=sa;Password=power;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
+        SqlConnection con = new SqlConnection("Data Source=MKT-AJAYOLD\\ASLAM;Initial Catalog=jctdev;Persist Security Info=True;User ID=sa;Password=power@123;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
         con.Open();
+        tran = con.BeginTransaction();
+        //System.Threading.Thread.Sleep(2000);
+        try
+        {
+           
         string SqlPass = null;
         SqlCommand cmd = new SqlCommand();
         SqlPass = "jct_payroll_emp_address_detail_PortalPost";
-        cmd = new SqlCommand(SqlPass, con);
+        cmd = new SqlCommand(SqlPass, con,tran);
         cmd.CommandType = CommandType.StoredProcedure;
         //cmd.Parameters.Add("@EmployeeCode", SqlDbType.VarChar, 10).Value = "9000000334";
         //cmd.Parameters.Add("@EmployeeCode", SqlDbType.VarChar, 10).Value = MyStaticValues.MyStaticBool;
@@ -215,13 +215,38 @@ public partial class Jct_Payroll_User_Detail1 : System.Web.UI.Page
         int row = cmd.ExecuteNonQuery();
         //nameCookie.Expires = DateTime.Now.AddDays(-1);
 
-        //if(row >1)
-        //{
+        foreach (var myval in user2)
+        {
+            //SaveTempFamilyDetail(myval.Relation, myval.Name, myval.dob, myval.DisableFlag);
 
-        //}
-        //}
-        //catch(Exception ex) {
-        //}
+            //string SqlPass = null;
+            //SqlCommand cmd = new SqlCommand();
+            SqlPass = "jct_payroll_Family_Detail_PortalTempPost";
+            cmd = new SqlCommand(SqlPass, con,tran);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("@NewEmployeecode", SqlDbType.VarChar, 10).Value = "9000000334";
+            //cmd.Parameters.Add("@Dob", SqlDbType.VarChar, 50).Value = dob;
+            cmd.Parameters.Add("@Dob", SqlDbType.DateTime).Value = Convert.ToDateTime(myval.dob);
+            cmd.Parameters.Add("@NAME", SqlDbType.VarChar, 50).Value = myval.Name;
+            cmd.Parameters.Add("@Relation", SqlDbType.VarChar, 50).Value = myval.Relation;
+            cmd.Parameters.Add("@DisableFlag", SqlDbType.VarChar, 50).Value = myval.DisableFlag;
+            int row2 = cmd.ExecuteNonQuery();
+        }
+
+        tran.Commit();
+        con.Close();
+            //if(row >1)
+            //{
+
+            //}
+        }
+        catch (Exception ex)
+        {
+            tran.Rollback();
+            con.Close();
+            return;
+
+        }
 
     }
 
@@ -385,28 +410,29 @@ public partial class Jct_Payroll_User_Detail1 : System.Web.UI.Page
 
     public static void SaveTempFamilyDetail(string Relation, string name, string dob, string DisableFlag)
     {        //SqlConnection con = new SqlConnection("Data Source=test2k;Initial Catalog=jctdev3;Persist Security Info=True;User ID=itgrp;Password=power;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
-        SqlConnection con = new SqlConnection("Data Source=ITS-ASLAM7\\ASLAM;Initial Catalog=jctdev;Persist Security Info=True;User ID=sa;Password=power;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
-        con.Open();
-        try
-        {            
-            string SqlPass = null;
-            SqlCommand cmd = new SqlCommand();
-            SqlPass = "jct_payroll_Family_Detail_PortalTempPost";
-            cmd = new SqlCommand(SqlPass, con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("@NewEmployeecode", SqlDbType.VarChar, 10).Value = "9000000334";
-            //cmd.Parameters.Add("@Dob", SqlDbType.VarChar, 50).Value = dob;
-            cmd.Parameters.Add("@Dob", SqlDbType.DateTime).Value = Convert.ToDateTime(dob);
-            cmd.Parameters.Add("@NAME", SqlDbType.VarChar, 50).Value = name;
-            cmd.Parameters.Add("@Relation", SqlDbType.VarChar, 50).Value = Relation;
-            cmd.Parameters.Add("@DisableFlag", SqlDbType.VarChar, 50).Value = DisableFlag;
-            int row = cmd.ExecuteNonQuery();
-            con.Close();
-        }
-        catch(Exception ex)
-        {
-            con.Close();
-        }
+             //SqlConnection con = new SqlConnection("Data Source=ITS-ASLAM7\\ASLAM;Initial Catalog=jctdev;Persist Security Info=True;User ID=sa;Password=power;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
+        //SqlConnection con = new SqlConnection("Data Source=MKT-AJAYOLD\\ASLAM;Initial Catalog=jctdev;Persist Security Info=True;User ID=sa;Password=power@123;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
+        //con.Open();
+        //try
+        //{            
+            //string SqlPass = null;
+            //SqlCommand cmd = new SqlCommand();
+            //SqlPass = "jct_payroll_Family_Detail_PortalTempPost";
+            //cmd = new SqlCommand(SqlPass, con);
+            //cmd.CommandType = CommandType.StoredProcedure;
+            //cmd.Parameters.Add("@NewEmployeecode", SqlDbType.VarChar, 10).Value = "9000000334";
+            ////cmd.Parameters.Add("@Dob", SqlDbType.VarChar, 50).Value = dob;
+            //cmd.Parameters.Add("@Dob", SqlDbType.DateTime).Value = Convert.ToDateTime(dob);
+            //cmd.Parameters.Add("@NAME", SqlDbType.VarChar, 50).Value = name;
+            //cmd.Parameters.Add("@Relation", SqlDbType.VarChar, 50).Value = Relation;
+            //cmd.Parameters.Add("@DisableFlag", SqlDbType.VarChar, 50).Value = DisableFlag;
+            //int row = cmd.ExecuteNonQuery();
+        //    con.Close();
+        //}
+        //catch(Exception ex)
+        //{
+        //    con.Close();
+        //}
     }
 
     //public static List<Cities> AllCityList()

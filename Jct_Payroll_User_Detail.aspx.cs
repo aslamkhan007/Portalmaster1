@@ -158,10 +158,11 @@ public partial class Jct_Payroll_User_Detail : System.Web.UI.Page
     {        
         System.Threading.Thread.Sleep(2000);
         //try
-        //{         
-            SqlConnection con = new SqlConnection("Data Source=misdev;Initial Catalog=jctdev;Persist Security Info=True;User ID=itgrp;Password=power;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
-            //SqlConnection con = new SqlConnection("Data Source=test2k;Initial Catalog=jctdev3;Persist Security Info=True;User ID=itgrp;Password=power;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
-            con.Open();
+        //{    
+        SqlConnection con = new SqlConnection("Data Source=MKT-AJAYOLD\\ASLAM;Initial Catalog=jctdev;Persist Security Info=True;User ID=sa;Password=power@123;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
+        //SqlConnection con = new SqlConnection("Data Source=misdev;Initial Catalog=jctdev;Persist Security Info=True;User ID=itgrp;Password=power;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
+        //SqlConnection con = new SqlConnection("Data Source=test2k;Initial Catalog=jctdev3;Persist Security Info=True;User ID=itgrp;Password=power;Connect Timeout = 100000;pooling=true;Max Pool Size=200;MultipleActiveResultSets=True");
+        con.Open();
             string SqlPass = null;
             SqlCommand cmd = new SqlCommand();
             SqlPass = "jct_payroll_emp_address_detail_PortalPost";

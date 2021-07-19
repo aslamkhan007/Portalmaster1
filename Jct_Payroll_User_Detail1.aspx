@@ -23,12 +23,34 @@
                 font-weight: 700;
                 align-content: center;
             }
+
+            table {
+                border-collapse: collapse;
+                border-spacing: 0;
+                width: 100%;
+                border: 1px solid #ddd;
+            }
+
+            th, td {
+                text-align: left;
+                padding: 0px;
+                border: 1px solid #dddddd;
+                font-size: 10.8px;
+            }
+
+            tr:nth-child(even) {
+                background-color: #f2f2f2
+            }
+
+            .clsDelete{
+                cursor:pointer
+            }
         </style>
     </head>
 
 
     <body>
-        <div class="container" style="padding-left: 0px;">
+        <div id ="containers" class="container" style="padding-left: 0px;">
             <form id="myform" name="myform" autocomplete="off">
                 <div id="Form1">
                     <h3 style="font-size: 20px; margin: 20px;">CURRENT ADDRESS</h3>
@@ -78,30 +100,47 @@
                     <div class="btn-box">
                         <button type="button" id="Back1"><i class="fas fa-angle-double-left"></i>Back</button>
                         <button type="button" id="Next2"><i class="fas fa-angle-double-right"></i>Next</button>
-                        <%--<button id="submit" type="submit" onclick="return PermanentValidation()"><i class="fa fa-lock" aria-hidden="true"></i>Submit</button>--%>                        
+                        <%--<button id="submit" type="submit" onclick="return PermanentValidation()"><i class="fa fa-lock" aria-hidden="true"></i>Submit</button>--%>
                     </div>
                 </div>
 
-                
-            <div id="Form3">
-                <%--<h3>Family Details</h3>--%>
-                <h3>FAMILY DETAILS</h3>
-                 <select id="RelationDropdown">
-                                <option value="RELATION">RELATION</option>
-                                <option value="SELF">SELF</option>
-                                <option value="SPOUSE">SPOUSE</option>
-                                <option value="FATHER">FATHER</option>
-                                <option value="MOTHER">MOTHER</option>
-                                <option value="DAUGHTER">DAUGHTER</option>
-                                <option value="SON">SON</option>
-                                <option value="FATHERINLAW">FATHERINLAW</option>
-                                <option value="MOTHERINLAW">MOTHERINLAW</option>
-                            </select>
-                 <input type="text" id="nametext" maxlength="35" placeholder="EMAIL" autocomplete ="off" />
-                <input type="text" id="dobtext" maxlength="35" placeholder="DOB" autocomplete ="off"/>
-                
-                <button type="button" id="AddRowbtn"><i class="fas fa-angle-double-right"></i>ADD</button>
-<%--                <table id="AddRowTable">
+
+                <div id="Form3">
+                    <%--<h3>Family Details</h3>--%>
+                    
+                    <h3>FAMILY DETAILS</h3>
+                    <div style ="display: flex;">
+                        <select id="RelationDropdown" style ="width: 50%;">
+                        <option value="RELATION">RELATION</option>
+                        <option value="SELF">SELF</option>
+                        <option value="SPOUSE">SPOUSE</option>
+                        <option value="FATHER">FATHER</option>
+                        <option value="MOTHER" >MOTHER</option>
+                        <option value="DAUGHTER">DAUGHTER</option>
+                        <option value="SON">SON</option>
+                        <option value="FATHERINLAW">FATHERINLAW</option>
+                        <option value="MOTHERINLAW">MOTHERINLAW</option>
+                    </select>
+                         <input style ="width: 50%;" type="text" id="dobtext" maxlength="35" placeholder="DOB" autocomplete="off" />
+                        </div>
+                    
+                    <input type="text" id="nametext" maxlength="35" placeholder="NAME" autocomplete="off" />
+                   
+                     <div style ="display: flex;">
+                          <select id="Disabled" style ="width: 50%;">
+                        <option value="NO">DISABLED-NO</option>
+                        <option value="YES">DISABLED-YES</option>
+                    
+                    </select>
+                    
+                        <%--<div  id="AddRowbtn">--%>
+                        <button style ="width: 50%;" type="button" id="AddRowbtn">
+                                <i class="fas fa-user-plus"></i> ADD
+
+                           </button>
+                      <%--  </div>--%>
+                         </div>
+                    <%--                <table id="AddRowTable">
                     <tr>
                         <td>
                             <label>Relation</label>
@@ -135,27 +174,34 @@
                     </tr>
                 </table>--%>
 
+                    <div style="overflow-x: auto;margin-top: 12px;">
+                    <table id="FamilyDetailTable" >
+                        <thead>
+                            <tr>
+                                <th>
+                                    <i class="fas fa-user-times"></i>
+                                </th>
+                                <th>RELATION
+                                </th>
+                                <th>NAME
+                                </th>
+                                <th>AGE
+                                </th>
+                                <th>ISDISABLED
+                                </th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                        </div>
 
-                <table id="FamilyDetailTable">
-                    <thead>
-                        <tr>
-                            <th>Relation
-                            </th>
-                            <th>Name
-                            </th>
-                            <th>Age
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-
-                <div class="btn-box" style ="margin-top: 72%">
-                    <button type="button" id="Back2"><i class="fas fa-angle-double-left"></i>Back</button>
-                    <button id="submit" type="submit"><i class="fa fa-lock" aria-hidden="true"></i>Submit</button>                   
+                    <div class="btn-box">
+                        <button type="button" id="Back2"><i class="fas fa-angle-double-left"></i>Back</button>
+                        <button id="submit" type="submit"><i class="fa fa-lock" aria-hidden="true"></i>Submit</button>
+                    </div>
                 </div>
-            </div>
 
             </form>
             <div class="step-row">
@@ -409,7 +455,7 @@
                         for (var i = 0; i < response.d.FamilyDetails.length; i++) {
                             //$('#FamilyDetailTable').append('<tr><td>' + response.d.FamilyDetails[i].Relation + '</td><td>' + response.d.FamilyDetails[i].Name + '</td><td>' + response.d.FamilyDetails[i].dob + '</td></tr>');
                             //$('#FamilyDetailTable').append('<tr><td>' + response.d.FamilyDetails[i].Relation + '</td><td>' + response.d.FamilyDetails[i].Name + '</td><td>' + response.d.FamilyDetails[i].dob + '</td><td><input type="button" class = "clsDelete"><i class="fa fa-trash" aria-hidden="true"></i></input></td></tr>');
-                            $('#FamilyDetailTable').append('<tr><td>' + response.d.FamilyDetails[i].Relation + '</td><td>' + response.d.FamilyDetails[i].Name + '</td><td>' + response.d.FamilyDetails[i].dob + '</td><td><div class="clsDelete"><i class="fa fa-trash" aria-hidden="true"></i></div></td></tr>');
+                            $('#FamilyDetailTable').append('<tr><td><div class="clsDelete"><i class="fas fa-trash-alt" aria-hidden="true"></i></div></td><td>' + response.d.FamilyDetails[i].Relation + '</td><td>' + response.d.FamilyDetails[i].Name + '</td><td>' + response.d.FamilyDetails[i].dob + '</td><td>NO</td></tr>');
                         }
                     }
 
@@ -434,21 +480,21 @@
                 }
 
 
-               // Logic to iterate and make array of objects for insert for table records
+                // Logic to iterate and make array of objects for insert for table records
                 function tablerowsdata() {
                     var table = document.getElementById('FamilyDetailTable');
-                    for (let i = 0 ; i < table.rows.length; i++) {
+                    for (let i = 0; i < table.rows.length; i++) {
                         var tr = table.rows[i];
                         let myarr = [];
-                        for (var j = 0; j < tr.cells.length ; j++) {
+                        for (var j = 0; j < tr.cells.length; j++) {
                             var td = tr.cells[j].innerText;
                             myarr.push(td)
                         }
                         if (i > 0) {
                             obj.push({
-                                Relation: myarr[0],
-                                Name: myarr[1],
-                                dob: myarr[2]
+                                Relation: myarr[1],
+                                Name: myarr[2],
+                                dob: myarr[3]
                             });
                         }
                     }
@@ -464,12 +510,14 @@
                     console.log(date);
                     //alert(((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
 
+                    var cusdate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear();
+
                     if (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear() == "Invalid Date")
                         return false;
-                        ;
+                    ;
 
 
-                    $('#FamilyDetailTable > tbody:last-child').append('<tr><td>' + $('#RelationDropdown option:selected').text() + '</td><td>' + $('#nametext').val() + '</td><td>' + date + '</td><td><div class="clsDelete"><i class="fa fa-trash" aria-hidden="true"></i></div></td></tr>');
+                    $('#FamilyDetailTable > tbody:last-child').append('<tr><td><div class="clsDelete"><i class="fas fa-trash-alt" aria-hidden="true"></i></div></td><td>' + $('#RelationDropdown option:selected').text() + '</td><td>' + $('#nametext').val() + '</td><td>' + cusdate + '</td><td>NO</td></tr>');
 
                     //last value before adding thrash
                     //$('#FamilyDetailTable > tbody:last-child').append('<tr><td>' + $('#RelationDropdown option:selected').text() + '</td><td>' + $('#nametext').val() + '</td><td>' + date + '</td><td><input type="button" value="Delete Row1"></td></tr>');
@@ -528,7 +576,7 @@
                         console.log(permanentAddress);
                         console.log(obj);
 
-                        
+
 
 
                         $.ajax({
@@ -553,6 +601,7 @@
 
                             },
                             complete: function (xhr, textStatus) {
+                                debugger;
                                 if (textStatus == 'success') {
                                     window.location.reload();
                                 }
@@ -723,6 +772,8 @@
             var Back2 = document.getElementById("Back2");
 
             var progress = document.getElementById("progress");
+            var c = document.getElementById("containers");
+            
 
 
             Next1.onclick = function () {
@@ -743,12 +794,14 @@
                 Form2.style.left = "-450px";
                 Form3.style.left = "40px";
                 progress.style.width = "360px"
+                containers.style.height = "720px"
             }
 
             Back2.onclick = function () {
                 Form3.style.left = "450px";
                 Form2.style.left = "40px";
                 progress.style.width = "180px"
+                containers.style.height = "620px"
             }
 
 
