@@ -15,6 +15,7 @@
         <script src="Newfolder10/js/fontawesome.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
+
             .CheckboxClass {
                 display: flex;
                 justify-content: center;
@@ -45,6 +46,10 @@
             .clsDelete{
                 cursor:pointer
             }
+
+            .ui-datepicker .ui-datepicker-title select {
+    color: #000;
+} 
         </style>
     </head>
 
@@ -121,7 +126,7 @@
                         <option value="FATHERINLAW">FATHERINLAW</option>
                         <option value="MOTHERINLAW">MOTHERINLAW</option>
                     </select>
-                         <input style ="width: 50%;" type="text" id="dobtext" maxlength="35" placeholder="DOB" autocomplete="off" />
+                         <input style ="width: 50%;" type="text" id="dobtext" maxlength="35" readonly="readonly" placeholder="DOB" autocomplete="off" />
                         </div>
                     
                     <input type="text" id="nametext" maxlength="35" placeholder="NAME" autocomplete="off" />
@@ -181,13 +186,13 @@
                                 <th>
                                     <i class="fas fa-user-times"></i>
                                 </th>
-                                <th>RELATION
+                                <th>Relation
                                 </th>
-                                <th>NAME
+                                <th>Name
                                 </th>
-                                <th>AGE
+                                <th>Age
                                 </th>
-                                <th>ISDISABLED
+                                <th>Disabled
                                 </th>
                                 
                             </tr>
@@ -324,7 +329,11 @@
 
             $(document).ready(function () {
                 //Jquery DatePicker Added
-                $('#dobtext').datepicker();
+                $('#dobtext').datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    dateFormat: "dd/mm/yy",
+                    yearRange: "-90:+00"});
                 var StoreAllCitiesList = [];
                 var StoreAllStatesList = [];
                 $('input').css('text-transform', 'uppercase');
@@ -506,15 +515,28 @@
                     console.log($('#dobtext').val());
                     //var date = new Date('2010-10-11T00:00:00+05:30');
                     //var date = new Date('2021-06-25');
-                    var date = new Date($('#dobtext').val());
-                    console.log(date);
+
+                    var dateParts = $('#dobtext').val().split("/");
+
+                    // month is 0-based, that's why we need dataParts[1] - 1
+                    var date = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+
+                    var dateObject = ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + date.getFullYear();
+                    var cusdate = dateObject.toString();
+
+                    //document.body.innerHTML = dateObject.toString();
+
+                    //var date = new Date($('#dobtext').val());
+                    console.log(cusdate.toString());
                     //alert(((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
 
-                    var cusdate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear();
-
-                    if (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear() == "Invalid Date")
-                        return false;
-                    ;
+                    //mm/dd/yyyy working
+                    //var cusdate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear();
+                    //modified not working
+                   // var cusdate = ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + date.getFullYear();
+                    //if (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear() == "Invalid Date")
+                    //    return false;
+                    //;
 
 
                     $('#FamilyDetailTable > tbody:last-child').append('<tr><td><div class="clsDelete"><i class="fas fa-trash-alt" aria-hidden="true"></i></div></td><td>' + $('#RelationDropdown option:selected').text() + '</td><td>' + $('#nametext').val() + '</td><td>' + cusdate + '</td><td>NO</td></tr>');
