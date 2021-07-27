@@ -1,0 +1,7 @@
+this is upto 3 screen backup
+this is backup including different stored procedure name but with complete testing functionality . 
+need to change.
+1. procedure in place of test
+2. url page . 
+3 in designer ajax page name. 
+4. css multest replace. 
